@@ -31,9 +31,10 @@ class Node:
             f.write(public_key)
 
         key = RSA.import_key(open('public.pem').read())
-        signature = pkcs1_15.new(key).verify(hash_data, transaction.signature)
-
-        if signature != transaction.signature:
+        
+        try:
+            pkcs1_15.new(key).verify(hash_data, transaction.signature)
+        except ValueError:
             return False
 
         # OUT OF RANGE!: Balance verification
@@ -60,4 +61,5 @@ class Node:
                     self.block_chain.blocks[-1].coinbase,
                 )
             )
+        print(self.block_chain.blocks[-1].merkle_tree.nodes)
         return True

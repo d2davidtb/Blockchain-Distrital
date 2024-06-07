@@ -7,7 +7,7 @@ from core.models.transaction import Transaction
 
 class Block:
     id: int
-    merkle_root: MerkleTree
+    merkle_tree: MerkleTree
     transactions: List[Transaction]
     nonce: int
     previous_hash: str
@@ -20,7 +20,7 @@ class Block:
         self.transactions = []
         self.nonce = 0
         self.previous_hash = previous_hash
-        self.merkle_root = MerkleTree([[]])
+        self.merkle_tree = MerkleTree([[]])
         self.coinbase = coinbase
         self.minner_uuid = None
     

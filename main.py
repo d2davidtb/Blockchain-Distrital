@@ -26,10 +26,9 @@ def run_flow():
     myself, nodes = init()
     transaction = myself.create_transaction(nodes.get(1).uuid, 2)
 
-    print("transaction.to_json_str()", transaction.to_json_str())
-    print("transaction.signature", transaction.signature)
-
     is_valid = nodes.get(2).verify_transaction(transaction)
+    print("is_valid", is_valid)
+
     
 
     # actor creation = ActorCreation()

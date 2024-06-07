@@ -9,7 +9,7 @@ class Transaction:
     sender_id: str
     receiver_id: str
     value: float
-    signature: str
+    signature: bytes
 
     def __init__(
         self,
@@ -36,4 +36,4 @@ class Transaction:
 
     def set_signature(self, signature: str):
         self.signature = signature
-
+        return self

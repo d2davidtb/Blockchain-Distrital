@@ -35,12 +35,11 @@ class Myself(Node):
         )
         return transaction
 
-    def sign_transaction(self, transaction: Transaction):
+    def sign_transaction(self, transaction: Transaction) -> bytes:
         hash_data = custom_hash_sha512_obj(transaction.to_json_str())
         with open("private.pem", "wb") as f:
             f.write(self.private_key)
 
         key = RSA.import_key(open('private.pem').read())
-        signature = pkcs1_15.new(key).sign(hash_data).hex()
-        print("transaction signature", signature)
+        signature = pkcs1_15.new(key).sign(hash_data)
         return signature
