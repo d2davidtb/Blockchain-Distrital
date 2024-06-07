@@ -1,3 +1,4 @@
+from uuid import UUID
 from typing import List
 
 from core.models.block import Block

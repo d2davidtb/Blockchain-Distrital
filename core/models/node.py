@@ -17,13 +17,14 @@ class Node:
         self.uuid = uuid
         self.public_key = public_key
         self.balance = balance
-        
+
     def set_nodes(self, nodes: Nodes):
+        self.nodes = nodes
         self.block_chain = BlockChain(nodes)
 
-    def verify_transaction(self, nodes, transaction: Transaction) -> bool:
+    def verify_transaction(self, transaction: Transaction) -> bool:
         # Verify signature
-        node = nodes.get_node(transaction.sender_uuid)
+        node = self.nodes.get_node(transaction.sender_uuid)
         public_key = node.public_key
         hash_data = custom_hash_sha512_obj(transaction.to_json_str())
         with open("public.pem", "wb") as f:
