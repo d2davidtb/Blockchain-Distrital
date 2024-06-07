@@ -6,11 +6,12 @@ from Crypto.PublicKey import RSA
 from core.models.myself import Myself
 from core.models.node import Nodes, Node
 from core.models.transaction import Transaction
+from core.models.block import Block
 
 
 def init() -> Tuple[Myself, Nodes]:
     myself = Myself()
-    
+
     nodes = Nodes()
     nodes.add_node(myself)
     for _ in range(9):
@@ -25,16 +26,16 @@ def init() -> Tuple[Myself, Nodes]:
     return myself, nodes
 
 class Flow:
-    
+
     def __init__(self):
         self.myself, self.nodes = init()
-        
+
     def handle(self):
         self.__set_first_transactions()
         self.__create_enough_transactions()
         print("blocks", self.myself.block_chain.blocks)
         print("last block transactions", self.myself.block_chain.blocks[-1].transactions)
-    
+
     def __set_first_transactions(self):
         # Creating and Sign
         for i in range(1, 10):
@@ -46,7 +47,7 @@ class Flow:
         for i in range(0, 7):
             transaction = self.myself.create_transaction(self.nodes.get(i).uuid, 1)
             self.verify_transaction_by_all(transaction)
-                
+
     def verify_transaction_by_all(self, transaction: Transaction):
         for node in self.nodes.nodes:
             # Verify

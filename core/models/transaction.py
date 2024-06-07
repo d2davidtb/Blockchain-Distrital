@@ -30,7 +30,7 @@ class Transaction:
             value=self.value,
         )
         return json.dumps(data, sort_keys=True)
-    
+
     def hash(self):
         return custom_hash_sha512(self.to_json_str())
 
