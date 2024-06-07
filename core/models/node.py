@@ -19,12 +19,14 @@ class Node:
         self.balance = balance
 
     def set_nodes(self, nodes: Nodes):
-        self.nodes = nodes
         self.block_chain = BlockChain(nodes)
+    
+    def get_last_block(self):
+        return self.block_chain.blocks[-1]
 
-    def verify_transaction(self, transaction: Transaction) -> bool:
+    def verify_transaction(self, nodes, transaction: Transaction) -> bool:
         # Verify signature
-        node = self.nodes.get_node(transaction.sender_uuid)
+        node = nodes.get_node(transaction.sender_uuid)
         public_key = node.public_key
         hash_data = custom_hash_sha512_obj(transaction.to_json_str())
         with open("public.pem", "wb") as f:
@@ -42,7 +44,7 @@ class Node:
             return False
 
         # OUT OF RANGE!: Broadcast to update node balance
-        node.balance = node.balance - transaction.value
+        # node.balance = node.balance - transaction.value
 
         # Add transaction to open block
         self.block_chain.blocks[-1].add_transaction(transaction)
@@ -61,5 +63,4 @@ class Node:
                     self.block_chain.blocks[-1].coinbase,
                 )
             )
-        print(self.block_chain.blocks[-1].merkle_tree.nodes)
         return True

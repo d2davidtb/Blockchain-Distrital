@@ -5,6 +5,7 @@ from Crypto.PublicKey import RSA
 
 from core.models.myself import Myself
 from core.models.node import Nodes, Node
+from core.models.transaction import Transaction
 
 
 def init() -> Tuple[Myself, Nodes]:
@@ -17,27 +18,40 @@ def init() -> Tuple[Myself, Nodes]:
         public_key = key.publickey().export_key()
         nodes.add_node(Node(uuid4(), public_key, 10))
 
-    for node in nodes.nodes:
+    for i, node in enumerate(nodes.nodes):
         node.set_nodes(nodes)
+        nodes.nodes[i] = node
 
     return myself, nodes
 
-def run_flow():
-    myself, nodes = init()
-    transaction = myself.create_transaction(nodes.get(1).uuid, 2)
-
-    is_valid = nodes.get(2).verify_transaction(transaction)
-    print("is_valid", is_valid)
-
+class Flow:
     
+    def __init__(self):
+        self.myself, self.nodes = init()
+        
+    def handle(self):
+        self.__set_first_transactions()
+        self.__create_enough_transactions()
+        print("blocks", self.myself.block_chain.blocks)
+        print("last block transactions", self.myself.block_chain.blocks[-1].transactions)
+    
+    def __set_first_transactions(self):
+        # Creating and Sign
+        for i in range(1, 10):
+            transaction = self.myself.create_transaction(self.nodes.get(i).uuid, 10)
+            self.verify_transaction_by_all(transaction)
 
-    # actor creation = ActorCreation()
-    # Node creation = NodeCreation()
-    # transaction_creation = TransactionCreation()
-    # transaction_verification = TransactionVerification()
-    # minning = Minning()
-    # generator = MerkleTreeGenerator([t, t2]).handle()
-    # block_verification = BlockVerification()
+    def __create_enough_transactions(self):
+        # Creating and Sign
+        for i in range(0, 7):
+            transaction = self.myself.create_transaction(self.nodes.get(i).uuid, 1)
+            self.verify_transaction_by_all(transaction)
+                
+    def verify_transaction_by_all(self, transaction: Transaction):
+        for node in self.nodes.nodes:
+            # Verify
+            is_valid = node.verify_transaction(self.nodes, transaction)
+
 
 if __name__ == "__main__":
-    run_flow()
+    Flow().handle()
