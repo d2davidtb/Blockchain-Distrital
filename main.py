@@ -33,25 +33,32 @@ class Flow:
     def handle(self):
         self.__set_first_transactions()
         self.__create_enough_transactions()
-        print("blocks", self.myself.block_chain.blocks)
-        print("last block transactions", self.myself.block_chain.blocks[-1].transactions)
 
     def __set_first_transactions(self):
         # Creating and Sign
+        print("Creating initial transactions...")
         for i in range(1, 10):
+            print("| Create and verify by all. Value 10")
             transaction = self.myself.create_transaction(self.nodes.get(i).uuid, 10)
-            self.verify_transaction_by_all(transaction)
+            self.__verify_transaction_by_all(transaction)
+        print("...Initial transactions created")
 
     def __create_enough_transactions(self):
         # Creating and Sign
+        print("Creating initial transactions...")
         for i in range(0, 7):
+            print("| Create and verify by all. Value 1")
             transaction = self.myself.create_transaction(self.nodes.get(i).uuid, 1)
-            self.verify_transaction_by_all(transaction)
+            self.__verify_transaction_by_all(transaction)
+        print("...Other transactions created")
 
-    def verify_transaction_by_all(self, transaction: Transaction):
+    def __verify_transaction_by_all(self, transaction: Transaction):
         for node in self.nodes.nodes:
             # Verify
             is_valid = node.verify_transaction(self.nodes, transaction)
+            if not is_valid:
+                # OUT OF RANGE!: Reject and diffuse
+                pass
 
 
 if __name__ == "__main__":
