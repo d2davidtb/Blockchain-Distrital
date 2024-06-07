@@ -8,8 +8,7 @@ from core.models.transaction import Transaction
 from core.models.blockchain import BlockChain
 from core.models.block import Block
 from core.models.nodes import Nodes
-from core.models.coinbase import Coinbase
-from core.helpers import custom_hash_sha512_obj
+from core.helpers import custom_hash_sha512_obj, custom_hash_sha512
 from core.process.merke_root_generator import MerkleTreeGenerator
 from core.helpers import custom_hash_md5
 
@@ -62,10 +61,6 @@ class Node:
         self.block_chain.blocks[-1].merkle_tree = MerkleTreeGenerator(
             self.block_chain.blocks[-1].merkle_tree
         ).handle(transaction).merkle_tree
-        
-        print("| | Merkle Tree Generator")
-        print(self.get_last_block().merkle_tree.nodes)
-        print("| | Merkle Tree Generated")
 
         # Add new block if previous is full
         if len(self.block_chain.blocks[-1].transactions) == 16:
@@ -99,6 +94,7 @@ class Node:
                 pending_block.minner_uuid = self.uuid
                 proof_of_work = True
                 break
+
             data["nonce"] += 1
             block_hash = custom_hash_md5(json.dumps(data, sort_keys=True))
 
@@ -113,6 +109,7 @@ class Node:
         block_hash = custom_hash_md5(json.dumps(data, sort_keys=True))
         if closed_block.current_hash == block_hash:
             return True
+
         # OUT OF RANGE! Continue listening
         return False
     
@@ -124,3 +121,6 @@ class Node:
             open_block.coinbase = open_block.coinbase
         else:
             open_block.coinbase.value = open_block.coinbase.value * 0.75
+
+        closed_block.hash()
+        open_block.previous_hash = custom_hash_sha512(closed_block.current_hash)

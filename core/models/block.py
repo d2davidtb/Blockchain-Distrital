@@ -29,7 +29,7 @@ class Block:
     def hash(self) -> str:
         data = self.to_json()
         self.current_hash = custom_hash_md5(json.dumps(data, sort_keys=True))
-    
+
     def add_transaction(self, transaction: Transaction):
         self.transactions.append(transaction)
 
