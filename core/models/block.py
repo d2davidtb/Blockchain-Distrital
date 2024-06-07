@@ -23,11 +23,11 @@ class Block:
         self.merkle_tree = MerkleTree([[]])
         self.coinbase = coinbase
         self.minner_uuid = None
-    
+
     def hash() -> str:
         # HASH usando MD5 de los bloques: Nonce + Merkle Root + Transacciones, tenga 3 ceros en el inicio
         pass
-    
+
     def add_transaction(self, transaction: Transaction):
         self.transactions.append(transaction)
 
